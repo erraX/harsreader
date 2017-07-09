@@ -1,0 +1,42 @@
+.home {
+    aside {
+        position: fixed;
+        height: 100%;
+        width: 150px;
+        left: 0;
+        top: 0;
+        background-color: #fff;
+        font-size: 12px;
+        overflow-y: scroll;
+
+        p {
+            margin-bottom: 5px;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        .title {
+            margin-left: 5px;
+            display: inline-block;
+            overflow: hidden;
+            width: 100px;
+            white-space: nowrap;
+            vertical-align: middle;
+            text-overflow: ellipsis;
+        }
+
+        .icon {
+            width: 15px;
+            vertical-align: middle;
+        }
+    }
+
+    .content {
+        margin-left: 100px;
+        width: 200px;
+        background-color: #000;
+        overflow: hidden;
+    }
+}
