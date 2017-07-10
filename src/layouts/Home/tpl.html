@@ -1,0 +1,23 @@
+<div class="home">
+  <loading v-if="!loaded"></loading>
+  <div v-else>
+    <aside v-show="loaded">
+      <label class="check-all">
+        <input
+          type="checkbox"
+          @click="checkAllSub"
+        >
+        全部选择
+      </label>
+      <p
+        v-for="subscription in subscriptions"
+        :id="subscription.id"
+        @click="checkSub(subscription)"
+      >
+        <img class="icon" :src="subscription.iconUrl" alt="">
+        <span class="title">{{ subscription.title }}</span>
+      </p>
+    </aside>
+    <div class="content"></div>
+  </div>
+</div>

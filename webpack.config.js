@@ -28,7 +28,7 @@ module.exports = {
                 loaders: ['style-loader', 'css-loader', 'less-loader'],
             },
             {
-                test: /\.tpl$/,
+                test: /\.html/,
                 loader: 'raw-loader',
             },
             {

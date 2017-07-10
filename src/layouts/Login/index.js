@@ -1,5 +1,5 @@
 import { getSubscriptions } from '../../api'
-import tpl from './template.tpl'
+import tpl from './tpl.html'
 
 import './style.less'
 

@@ -1,27 +1,35 @@
-import { getSubscriptions } from '../../api'
-import tpl from './template.tpl'
-
+import _ from 'lodash'
+import { getSubscriptions, getContents } from '../../api'
+import tpl from './tpl.html'
 import './style.less'
 
 export default {
-    data () {
+    template: tpl,
+
+    data() {
         return {
-            subscriptions: []
+            loaded: false,
+            subscriptions: [],
+            checkedSubscriptions: [],
         }
     },
-
-    template: tpl,
 
     mounted() {
         getSubscriptions()
             .then(subscriptions => {
                 this.subscriptions = subscriptions.body
+                this.loaded = true
             })
     },
 
     methods: {
-        onClickSubscription(subscription) {
-            console.log('select', subscription)
-        }
-    }
+        checkAllSub() {
+        
+        },
+
+        checkSub(subscription) {
+            const { id: streamId } = subscription
+            this.subscriptions
+        },
+    },
 }
