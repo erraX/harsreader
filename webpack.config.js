@@ -13,7 +13,7 @@ module.exports = {
             vue: 'vue/dist/vue.js'
         }
     },
-    target: 'electron-renderer',
+    // target: 'electron-renderer',
     module: {
         loaders: [
             {
