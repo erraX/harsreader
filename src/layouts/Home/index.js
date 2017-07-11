@@ -17,17 +17,12 @@ export default {
 
     mounted() {
         $.ajax({
-            url: 'http://localhost:3001/reader/api/0/user-info',
+            url: '/reader/api/0/user-info',
             // url: 'http://localhost:3001/reader/api/0/subscription/list',
             beforeSend(xhr) {
-                xhr.withCredentials = true
                 xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8')
                 xhr.setRequestHeader('Authorization', 'Bearer e48b369d6329341d4853e1f72b5cc141498e7f44')
-            },
-            xhrFields: {
-                withCredentials: true
-            },
-            crossDomain: true
+            }
         })
 
         // this.$http.get('http://localhost:3001/reader/api/0/user-info', { emulateJSON: true })

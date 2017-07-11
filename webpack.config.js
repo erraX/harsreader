@@ -2,7 +2,7 @@ var path = require('path')
 var webpack = require('webpack')
 
 module.exports = {
-    entry: './src/app.js',
+    entry: ['webpack-hot-middleware/client', './src/app.js'],
     output: {
         path: path.resolve(__dirname, './dist'),
         publicPath: '/dist/',
@@ -53,7 +53,12 @@ module.exports = {
         alias: {
             'vue$': 'vue/dist/vue.esm.js'
         }
-    }
+    },
+    plugins: [
+        new webpack.optimize.OccurrenceOrderPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoEmitOnErrorsPlugin()
+    ]
 }
 
 if (process.env.NODE_ENV === 'production') {

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 
-const endpoint = 'http://localhost:3001'
+const endpoint = ''
 
 function objToQueryStr(obj) {
     if (!obj) {
