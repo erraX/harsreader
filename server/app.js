@@ -5,7 +5,8 @@ var app = express();
 
 app.use('/v3', proxy({
     logLevel: 'debug',
-    target: 'https://cloud.feedly.com',
+    // target: 'https://cloud.feedly.com',
+    target: 'https://sandbox.feedly.com',
     changeOrigin: true,
     onProxyRes(proxyRes, req, res) {
         proxyRes.headers['Access-Control-Allow-Origin'] = '*';

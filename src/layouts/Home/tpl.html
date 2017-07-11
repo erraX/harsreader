@@ -11,13 +11,17 @@
       </label>
       <p
         v-for="subscription in subscriptions"
-        :id="subscription.id"
         @click="checkSub(subscription)"
       >
         <img class="icon" :src="subscription.iconUrl" alt="">
         <span class="title">{{ subscription.title }}</span>
       </p>
     </aside>
-    <div class="content"></div>
+    <div class="content">
+      <div v-for="feed in feeds">
+        <p>{{ feed.title }}</p>
+        <!-- <p>{{ feed.summary.content }}</p> -->
+      </div>
+    </div>
   </div>
 </div>
