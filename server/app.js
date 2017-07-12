@@ -1,9 +1,10 @@
-import path from 'path';
-import webpackConfig from '../webpack.config';
-import webpack from 'webpack';
-import express from 'express';
-import proxy from 'http-proxy-middleware';
-import WebpackMiddleware from 'webpack-dev-middleware';
+import path from 'path'
+import fetch from 'isomorphic-fetch'
+import webpackConfig from '../webpack.config'
+import webpack from 'webpack'
+import express from 'express'
+import proxy from 'http-proxy-middleware'
+import WebpackMiddleware from 'webpack-dev-middleware'
 import WebpackHotMiddleware from 'webpack-hot-middleware'
 
 const app = express();
@@ -29,78 +30,73 @@ app.use(middleware);
 app.use(WebpackHotMiddleware(compiler));
 app.use(express.static(path.join(__dirname, '..')));
 
-app.use('/auth', (res, req, next) => {
+app.get('/auth', (req, res, next) => {
 
     // Get code and status
+    const { code, state } = req.query;
+    console.log('Auth code:', code, 'state:', state);
 
     // Fetch token
+    fetch('https://www.inoreader.com/oauth2/token', {
+        method: 'POST',
+        body: JSON.stringify({
+            code: code,
+            redirect_uri: 'http://localhost:3000/auth',
+            client_id: 1000000531,
+            client_secret: 'Mjf5Ihm1FB9Gf1X_dDYwZShSfBeWgoWO',
+            grant_type: 'authorization_code',
+            scope: ''
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(
+        res => {
+            const { status, statusText, body } = res
+            console.log(`${status}:${statusText}`)
+            return res.json()
+        }
+    )
+    .then(
+        data => {
+            console.log('Data', data);
+            // Add `Authorization` to every response'header
 
-    // Add `Authorization` to every response'header
+            // Redirect to `/home`
+            res.redirect(301, 'http://localhost:3000/#/home')
+        }
+    )
+    .catch(
+        err => console.log('Error', err)
+    )
 
-    // Redirect to `/home`
+    // res.status(200).send();
 })
 
-
-app.use('/rss', (res, req, next) => {
+app.use('/rss', (req, res, next) => {
 
     // inoreader api starts with `/rss`
 
     // is login or not
 
     // Poxsy all request to `https://www.inoreader.com`
-})
+
+    next();
+});
+
+app.use('/rss', proxy({
+    logLevel: 'debug',
+    changeOrigin: true,
+    target: 'https://www.inoreader.com',
+    pathRewrite: {
+        '^/rss': '/'
+    }
+}));
 
 app.listen(
     3000,
-    '0.0.0.0',
+    'localhost',
     () => {
         console.log(`App listening at http://0.0.0.0:3000`);
     }
 );
-
-// function allowCORS(res) {
-//     res.setHeader("Access-Control-Allow-Origin", 'http://localhost:3000');
-//     res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT');
-//     res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization');
-//     res.setHeader('Access-Control-Allow-Credentials', true);
-//
-//     return res;
-// }
-//
-//
-//
-// app.use((req, res, next) => {
-//     if (req.method === 'OPTIONS') {
-//         res.setHeader("Access-Control-Allow-Origin", 'http://localhost:3000');
-//         res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT');
-//         res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization');
-//         res.setHeader('Access-Control-Allow-Credentials', true);
-//         return res.status(200).send();
-//     }
-//
-//     next();
-// });
-//
-// app.use('/', proxy({
-//     logLevel: 'debug',
-//     target: 'https://www.inoreader.com',
-//     changeOrigin: true,
-//     onProxyReq(proxyReq, req, res) {
-//         console.log('RAW REQUEST from the target', JSON.stringify(req.headers, true, 2));
-//     },
-//     onProxyRes(proxyRes, req, res) {
-//         console.log('RAW Response from the target', JSON.stringify(proxyRes.headers, true, 2));
-//
-//         proxyRes.headers['Access-Control-Allow-Origin'] = '*';
-//         proxyRes.headers['Access-Control-Allow-Methods'] = 'GET,HEAD,OPTIONS,POST,PUT';
-//         proxyRes.headers['Access-Control-Allow-Headers'] = 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization';
-//     },
-//     onError(err, req, res) {
-//         console.log('ERROR', err);
-//         res.writeHead(500, {
-//             'Content-Type': 'text/plain'
-//         });
-//         res.end('Something went wrong. And we are reporting a custom error message.');
-//     }
-// }));
-
