@@ -24,8 +24,17 @@ function request(method, url) {
                     if (err.status === 401) {
                         location.href = '/#/login'
                     }
+
+                    throw new Error(err)
                 }
             )
 }
 
 export const getUserInfo = request(`get`, `/rss/reader/api/0/user-info`)
+export const getSbList = request(`get`, `rss/reader/api/0/subscription/list`)
+export const getContent = (data, options) => {
+    const streamId = data.streamId
+    delete data.streamId
+
+    return request(`get`, `rss/reader/api/0/stream/contents/${streamId}?${objToQueryStr(data)}`)()
+}

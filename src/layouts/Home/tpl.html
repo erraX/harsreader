@@ -18,6 +18,10 @@
         <span class="title">{{ subscription.title }}</span>
       </p>
     </aside>
-    <div class="content"></div>
+    <div class="content">
+      <p v-for="item in curItems">
+        {{ item.title }}
+      </p>
+    </div>
   </div>
 </div>

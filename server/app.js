@@ -91,6 +91,8 @@ app.use('/rss', (req, res, next) => {
     const token = req.session.token
 
     if (!token) {
+        // req.session.token = {}
+        // req.session.token['access_token'] = '5b099744af20fc628044b63c54ff2f4c581a423f'
 
         // Unauthorized
         return res.sendStatus(401)

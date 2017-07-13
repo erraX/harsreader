@@ -5,7 +5,6 @@ import VueResource from 'vue-resource'
 import Loading from './components/Loading'
 import Login from './layouts/Login'
 import Home from './layouts/Home'
-import auth from './layouts/auth'
 
 import './global.less'
 
@@ -20,7 +19,6 @@ const router = new VueRouter({
     routes: [
         { path: '/login', name: 'login', component: Login },
         { path: '/home', name: 'home', component: Home },
-        { path: '/auth', name: 'auth', component: auth },
     ]
 })
 

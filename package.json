@@ -8,7 +8,7 @@
   "scripts": {
     "webpack-dev-server": "cross-env NODE_ENV=development webpack-dev-server --inline --hot --port 3000",
     "electron": "cross-env NODE_ENV=development electron ./",
-    "server": "cross-env NODE_ENV=development nodemon ./server/runner.js",
+    "server": "cross-env NODE_ENV=development node ./server/runner.js",
     "dev": "concurrently --kill-others \"npm run webpack-dev-server\" \"npm run electron\"",
     "build": "cross-env NODE_ENV=production webpack --progress --profile --colors",
     "start": "cross-env NODE_ENV=production electron ./",
