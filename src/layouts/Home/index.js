@@ -26,6 +26,7 @@ export default {
         // })
 
         getUserInfo()
+            .then(data => console.log(data))
 
         // this.$http.get('http://localhost:3001/reader/api/0/user-info', { emulateJSON: true })
         //     .then(

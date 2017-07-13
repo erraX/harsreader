@@ -15,13 +15,17 @@ function objToQueryStr(obj) {
     return queryArray.join('&')
 }
 
-export const getAuthCode = (data, options) => Vue.http.get(`/auth/auth`)
-export const getToken = (data, options) => Vue.http.post(`/oauth2/token`, data, options)
+function request(method, url) {
+    return (data, options) =>
+        Vue.http[method](url, data, options)
+            .then(
+                res => res.body,
+                err => {
+                    if (err.status === 401) {
+                        location.href = '/#/login'
+                    }
+                }
+            )
+}
 
-export const getProfile = (data, options) => Vue.http.get(`/profile`)
-export const getUserInfo = (data, options) => Vue.http.get(`/rss/reader/api/0/user-info`, data, options)
-
-export const getSubscriptions = (data, options) => Vue.http.get(`/subscriptions`)
-export const getSubscriptionsToFeed = (data, options) => Vue.http.post(`/subscriptions`)
-
-export const getContents = (data, options) => Vue.http.get(`/streams/contents?${objToQueryStr(data)}`)
+export const getUserInfo = request(`get`, `/rss/reader/api/0/user-info`)

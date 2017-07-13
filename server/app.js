@@ -2,15 +2,24 @@ import path from 'path'
 import fetch from 'isomorphic-fetch'
 import webpackConfig from '../webpack.config'
 import webpack from 'webpack'
+import session from 'express-session'
+import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
 import express from 'express'
 import proxy from 'http-proxy-middleware'
 import WebpackMiddleware from 'webpack-dev-middleware'
 import WebpackHotMiddleware from 'webpack-hot-middleware'
 
-const app = express();
+const app = express()
+
+app.set('trust proxy', 1)
+app.use(cookieParser())
+app.use(session({ secret: 'keyboard cat' }))
+
+app.use(bodyParser())
 
 // Webpack middleware
-const compiler = webpack(webpackConfig);
+const compiler = webpack(webpackConfig)
 const middleware = WebpackMiddleware(
     compiler,
     {
@@ -24,17 +33,17 @@ const middleware = WebpackMiddleware(
             modules: true
         }
     }
-);
+)
 
-app.use(middleware);
-app.use(WebpackHotMiddleware(compiler));
-app.use(express.static(path.join(__dirname, '..')));
+app.use(middleware)
+app.use(WebpackHotMiddleware(compiler))
+app.use(express.static(path.join(__dirname, '..')))
 
 app.get('/auth', (req, res, next) => {
 
     // Get code and status
-    const { code, state } = req.query;
-    console.log('Auth code:', code, 'state:', state);
+    const { code, state } = req.query
+    console.log('Auth code:', code, 'state:', state)
 
     // Fetch token
     fetch('https://www.inoreader.com/oauth2/token', {
@@ -53,50 +62,68 @@ app.get('/auth', (req, res, next) => {
     }).then(
         res => {
             const { status, statusText, body } = res
-            console.log(`${status}:${statusText}`)
+
             return res.json()
         }
     )
     .then(
-        data => {
-            console.log('Data', data);
-            // Add `Authorization` to every response'header
+        token => {
+            // Add `Authorization` to session
+            req.session.token = token
 
             // Redirect to `/home`
             res.redirect(301, 'http://localhost:3000/#/home')
         }
     )
     .catch(
-        err => console.log('Error', err)
-    )
+        err => {
+            console.log('Error', err)
 
-    // res.status(200).send();
+            // Redirect to `/login`
+            res.redirect(301, 'http://localhost:3000/#/login')
+        }
+    )
 })
 
 app.use('/rss', (req, res, next) => {
 
-    // inoreader api starts with `/rss`
-
     // is login or not
+    const token = req.session.token
 
-    // Poxsy all request to `https://www.inoreader.com`
+    if (!token) {
 
-    next();
-});
+        // Unauthorized
+        return res.sendStatus(401)
+    }
 
+    next()
+})
+
+// Poxsy all request to `https://www.inoreader.com`
 app.use('/rss', proxy({
     logLevel: 'debug',
+
     changeOrigin: true,
+
     target: 'https://www.inoreader.com',
+
     pathRewrite: {
         '^/rss': '/'
+    },
+
+    onProxyReq(proxyReq, req, res) {
+        const token = req.session.token
+
+        if (token) {
+            proxyReq.setHeader('Authorization', 'Bearer ' + token['access_token'])
+        }
     }
-}));
+}))
 
 app.listen(
     3000,
     'localhost',
     () => {
-        console.log(`App listening at http://0.0.0.0:3000`);
+        console.log(`App listening at http://0.0.0.0:3000`)
     }
-);
+)
