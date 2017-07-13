@@ -1,5 +1,4 @@
-import $ from 'jquery'
-import _ from 'lodash'
+import PouchDB from 'pouchdb/dist/pouchdb'
 import { getSbList, getContent } from '../../api'
 import tpl from './tpl.html'
 import './style.less'
@@ -13,10 +12,16 @@ export default {
             subscriptions: [],
             curSubscriptions: [],
             curItems: [],
+            db: new PouchDB('subscriptions'),
         }
     },
 
     mounted() {
+        this.db.put({
+            _id: new Date().toISOString(),
+            title: 'haha',
+            completed: false
+        })
         getSbList()
             .then(
                 data => {
