@@ -16,18 +16,20 @@ function objToQueryStr(obj) {
 }
 
 function request(method, url) {
-    return (data, options) =>
-        Vue.http[method](url, data, options)
-            .then(
-                res => res.body,
-                err => {
-                    if (err.status === 401) {
-                        location.href = '/#/login'
-                    }
+    return async (data, options) => {
+        try {
+            const res = await Vue.http[method](url, data, options)
+            return res.body
+        }
+        catch (err) {
+            if (err.status === 401) {
+                location.href = '/#/login'
+            }
 
-                    throw new Error(err)
-                }
-            )
+            // throw new Error(JSON.stringify(err))
+            throw new Error(err.body)
+        }
+    }
 }
 
 export const getUserInfo = request(`get`, `/rss/reader/api/0/user-info`)

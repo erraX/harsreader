@@ -1,6 +1,7 @@
 import path from 'path'
 import fetch from 'isomorphic-fetch'
 import webpackConfig from '../webpack.config'
+import { clientId, clientSecret } from './configs/oauth'
 import webpack from 'webpack'
 import session from 'express-session'
 import bodyParser from 'body-parser'
@@ -51,8 +52,8 @@ app.get('/auth', (req, res, next) => {
         body: JSON.stringify({
             code: code,
             redirect_uri: 'http://localhost:3000/auth',
-            client_id: 1000000531,
-            client_secret: 'Mjf5Ihm1FB9Gf1X_dDYwZShSfBeWgoWO',
+            client_id: clientId,
+            client_secret: clientSecret,
             grant_type: 'authorization_code',
             scope: ''
         }),
@@ -90,11 +91,8 @@ app.use('/rss', (req, res, next) => {
     // is login or not
     const token = req.session.token
 
+    // Unauthorized
     if (!token) {
-        // req.session.token = {}
-        // req.session.token['access_token'] = '5b099744af20fc628044b63c54ff2f4c581a423f'
-
-        // Unauthorized
         return res.sendStatus(401)
     }
 

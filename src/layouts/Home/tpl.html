@@ -2,13 +2,7 @@
   <loading v-if="!loaded"></loading>
   <div v-else>
     <aside v-show="loaded">
-      <label class="check-all">
-        <input
-          type="checkbox"
-          @click="checkAllSub"
-        >
-        全部选择
-      </label>
+      <div @click="showAll">All</div>
       <p
         v-for="subscription in subscriptions"
         :id="subscription.id"
@@ -19,8 +13,10 @@
       </p>
     </aside>
     <div class="content">
-      <p v-for="item in curItems">
-        {{ item.title }}
+      <p v-for="item in sortedItems">
+        <a :href="item.canonical[0].href" target="_blank">
+          {{ item.title }}({{ item.origin.title }})
+        </a>
       </p>
     </div>
   </div>
