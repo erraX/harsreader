@@ -12,8 +12,9 @@
         font-size: 12px;
         overflow-y: scroll;
 
-        p {
+        .feed {
             margin-bottom: 5px;
+            padding: 5px 0;
 
             &:hover {
                 cursor: pointer;
@@ -37,9 +38,51 @@
         }
     }
 
-    .content {
-        margin-left: 190px;
+    .feed-content {
+        margin-left: 172px;
         background-color: #F8F7F5;
         overflow: hidden;
+
+        .item {
+            padding: 20px;
+            position: relative;
+            display: block;
+            height: 170px;
+            color: #656565;
+            border-bottom: 1px solid #d7d1c6;
+        }
+
+        .title {
+            font-size: 21px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #585858;
+        }
+
+        .content {
+            height: 110px;
+            overflow: hidden;
+        }
+
+        .source {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            font-size: 12px;
+            color: #a2a2a2;
+        }
+
+        .time {
+            position: absolute;
+            right: 20px;
+            bottom: 5px;
+            font-size: 12px;
+            color: #a2a2a2;
+        }
+    }
+
+    .page-footer {
+        display: block;
+        height: 1px;
     }
 }

@@ -4,6 +4,7 @@
     <aside v-show="loaded">
       <div @click="showAll">All</div>
       <p
+        class="feed"
         v-for="subscription in subscriptions"
         :id="subscription.id"
         @click="checkSub(subscription)"
@@ -12,12 +13,19 @@
         <span class="title">{{ subscription.title }}</span>
       </p>
     </aside>
-    <div class="content">
-      <p v-for="item in sortedItems">
-        <a :href="item.canonical[0].href" target="_blank">
-          {{ item.title }}({{ item.origin.title }})
-        </a>
-      </p>
+    <div class="feed-content">
+      <a
+        class="item"
+        v-for="item in displayItems"
+        :href="item.canonical[0].href"
+        target="_blank"
+      >
+        <p class="title">{{ item.title }}</p>
+        <p class="content">{{ item.summary.content | html-text }}</p>
+        <span class="source">{{ item.origin.title }}</span>
+        <span class="time">{{ item.timestampUsec | timediffs }}</span>
+      </a>
+      <div class="page-footer" ref="footer"></div>
     </div>
   </div>
 </div>

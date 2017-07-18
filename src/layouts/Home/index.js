@@ -1,11 +1,7 @@
 import _ from 'lodash'
-import PouchDB from 'pouchdb/dist/pouchdb'
-import PouchDBFind from 'pouchdb-find'
-import { getSbList, getContent } from '../../api'
+import Feeds from '../../models/Feeds'
 import tpl from './tpl.html'
 import './style.less'
-
-PouchDB.plugin(PouchDBFind)
 
 export default {
     template: tpl,
@@ -15,81 +11,80 @@ export default {
             loaded: false,
             subscriptions: [],
             curItems: [],
-            db: new PouchDB('subscriptions'),
+            pageSize: 10,
+            pageNo: 1,
         }
     },
 
     computed: {
         sortedItems() {
-            return _.orderBy(this.curItems, ['timestampUsec'], ['desc']).slice(0, 100)
+            return  _.orderBy(this.curItems, ['timestampUsec'], ['desc'])
+                .filter(item => item && item.canonical && item.summary)
+        },
+
+        displayItems() {
+            return this.sortedItems.slice(0, this.pageNo * this.pageSize)
         }
     },
 
     async mounted() {
-        await this.fetchSubscriptions()
-        this.syncSubscriptions()
+        this.feed = new Feeds('subscriptions')
+
+        const subscriptions = await this.feed.fetchSubscriptions()
+        this.loaded = true
+        this.subscriptions = subscriptions
+
+        this.intervalSync()
+
+        setTimeout(() => {
+            this.io = new IntersectionObserver(this.nextPage);
+            this.io.observe(this.$refs.footer)
+        }, 0)
     },
 
     methods: {
-        async fetchSubscriptions() {
-            const res = await getSbList()
-
-            this.loaded = true
-            this.subscriptions = res.subscriptions
-
-            return res
+        intervalSync() {
+            this.feed.fetchFeeds(this.subscriptions)
+            setTimeout(() => {
+                this.intervalSync()
+            }, 1000 * 60 * 5)
         },
 
-        async syncSubscriptions() {
-            await this.subscriptions.forEach(
-                async ({ id: streamId }) => {
-                    const content = await getContent({ streamId, n: 200 })
-                    content.items.map(async item => {
+        nextPage(entries) {
 
-                        let itemInDb
-                        try {
-                            itemInDb = await this.db.get(item.id)
-                            // console.log(`item ${item.id} exists`);
-                        }
-                        catch (err) {
-                            // console.log(`item ${item.id} inserted`);
+            // 如果不可见，就返回
+            if (entries[0].intersectionRatio <= 0) {
+                return;
+            }
 
-                            return await this.db.put({
-                                _id: item.id,
-                                streamId: item.origin.streamId,
-                                ...item
-                            })
-                        }
-                    })
-                }
-            )
+            this.pageNo++
         },
 
-        async checkSub(subscription) {
-            const { id: streamId } = subscription
-
+        async checkSub({ id }) {
             try {
-                const items = await this.db.find({
-                    selector: { streamId }
-                })
+                const items = await this.feed.feedsBySub(id)
 
                 if (items && items.docs && items.docs.length) {
+                    console.log('Check items', items.docs);
                     this.curItems = items.docs
                 }
+
+                this.pageNo = 1
             }
-            catch(err) {}
+            catch(err) {
+                console.log(err);
+            }
         },
 
         async showAll() {
             try {
-                const items = await this.db.allDocs({
-                    include_docs: true,
-                    attachments: true
-                })
+                const items = await this.feed.allFeeds();
 
                 if (items && items.rows && items.rows.length) {
                     this.curItems = items.rows.map(row => row.doc)
                 }
+
+                this.pageNo = 1
             }
             catch (err) {
                 console.log('Error', err);
