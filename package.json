@@ -26,6 +26,7 @@
     "express-session": "^1.15.3",
     "http-proxy-middleware": "^0.17.4",
     "lodash": "^4.17.4",
+    "moment": "^2.18.1",
     "pouchdb": "^6.3.0",
     "pouchdb-find": "^6.3.2",
     "vue": "^2.3.4",

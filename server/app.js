@@ -122,7 +122,7 @@ app.use('/rss', proxy({
 
 app.listen(
     3000,
-    'localhost',
+    '0.0.0.0',
     () => {
         console.log(`App listening at http://0.0.0.0:3000`)
     }

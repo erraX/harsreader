@@ -1,31 +1,7 @@
 <div class="home">
   <loading v-if="!loaded"></loading>
   <div v-else>
-    <aside v-show="loaded">
-      <div @click="showAll">All</div>
-      <p
-        class="feed"
-        v-for="subscription in subscriptions"
-        :id="subscription.id"
-        @click="checkSub(subscription)"
-      >
-        <img class="icon" :src="subscription.iconUrl" alt="">
-        <span class="title">{{ subscription.title }}</span>
-      </p>
-    </aside>
-    <div class="feed-content">
-      <a
-        class="item"
-        v-for="item in displayItems"
-        :href="item.canonical[0].href"
-        target="_blank"
-      >
-        <p class="title">{{ item.title }}</p>
-        <p class="content">{{ item.summary.content | html-text }}</p>
-        <span class="source">{{ item.origin.title }}</span>
-        <span class="time">{{ item.timestampUsec | timediffs }}</span>
-      </a>
-      <div class="page-footer" ref="footer"></div>
-    </div>
+    <sidebar></sidebar>
+    <router-view></router-view>
   </div>
 </div>

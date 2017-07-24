@@ -21,7 +21,7 @@ function createWindow () {
 
     // and load the index.html of the app.
     if (process.env.NODE_ENV === 'development') {
-        mainWindow.loadURL(`http://localhost:3000`)
+        mainWindow.loadURL(`http://0.0.0.0:3000`)
     } else {
         mainWindow.loadURL(`file://${__dirname}/index.html`)
     }

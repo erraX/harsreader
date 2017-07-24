@@ -1,0 +1,12 @@
+<aside v-show="loaded">
+	<div @click="showAll">All</div>
+	<p
+		class="feed"
+		v-for="subscription in subscriptions"
+		:id="subscription.id"
+		@click="checkSub(subscription)"
+		>
+		<img class="icon" :src="subscription.iconUrl" alt="">
+		<span class="title">{{ subscription.title }}</span>
+	</p>
+</aside>
