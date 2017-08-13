@@ -2,6 +2,8 @@ import _ from 'lodash'
 import tpl from './tpl.html'
 import './style.less'
 
+import FooterObserver from '../../lib/FooterObserver'
+
 export default {
     template: tpl,
 
@@ -18,19 +20,24 @@ export default {
             subscriptions: [],
 
             // Page size
-            pageSize: 50,
+            pageSize: 20,
 
             // Current page no
             pageNo: 1,
-
-            // scroll height
-            scrollHeight: 0,
         }
+    },
+
+    mounted() {
+        this.observer = new FooterObserver({
+            $el: this.$refs.footer,
+            cb: ::this.nextPage
+        })
     },
 
     watch: {
         '$route'(to, from) {
             this.curSubId = to.params.feedId
+            this.pageNo = 1
         },
 
         async curSubId(id) {
@@ -52,5 +59,9 @@ export default {
         }
     },
 
-    methods: {}
+    methods: {
+        nextPage() {
+            this.pageNo++    
+        }
+    }
 }

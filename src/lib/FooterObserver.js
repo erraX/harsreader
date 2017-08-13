@@ -22,7 +22,7 @@ export default class FooterObserver {
     }
 
     visibleCb(entries) {
-        if (!this.isVisible) {
+        if (!this.isVisible(entries)) {
             return
         }
 
@@ -30,6 +30,6 @@ export default class FooterObserver {
     }
 
     isVisible(entries) {
-        return entries[0].intersectionRatio <= 0
+        return entries[0].intersectionRatio > 0
     }
 }
