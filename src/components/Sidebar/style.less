@@ -1,0 +1,38 @@
+aside {
+  position: fixed;
+  padding: 10px;
+  height: 100%;
+  width: 180px;
+  left: 0;
+  top: 0;
+  background-color: #565656;
+  box-sizing: border-box;
+  color: #cacaca;
+  font-size: 12px;
+  overflow-y: scroll;
+
+  .feed {
+    margin-bottom: 5px;
+    padding: 5px 0;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .title {
+    margin-left: 5px;
+    display: inline-block;
+    overflow: hidden;
+    width: 100px;
+    white-space: nowrap;
+    vertical-align: middle;
+    text-overflow: ellipsis;
+  }
+
+  .icon {
+    width: 20px;
+    vertical-align: middle;
+    border-radius: 3px;
+  }
+}

@@ -73,7 +73,7 @@ app.get('/auth', (req, res, next) => {
             req.session.token = token
 
             // Redirect to `/home`
-            res.redirect(301, 'http://localhost:3000/#/home')
+            res.redirect(301, 'http://localhost:3000/#/rss/feed/all')
         }
     )
     .catch(

@@ -12,7 +12,8 @@ import Loading from './components/Loading'
 
 // Layouts
 import Login from './layouts/Login'
-import Home from './layouts/Home'
+import Rss from './layouts/Rss'
+import Feed from './layouts/Feed'
 
 import './global.less'
 
@@ -82,7 +83,7 @@ const initer = {
                 { 
                     path: '/rss',
                     name: 'rss',
-                    component: Home,
+                    component: Rss,
                     children: [
                         // match `rss/feed/:feedId` to show feeds
                         // Reuse `sidebar` component
@@ -95,8 +96,7 @@ const initer = {
             ]
         })
 
-        this.router.replace('/rss')
-        // this.router.replace('/login')
+        this.router.replace('/rss/feed/all')
 
         return this
     },
@@ -111,9 +111,10 @@ const initer = {
         this.registerSources()
             .registerFilters()
             .registerComponents()
+            .initRouter()
 
         return new Vue({
-            this.router
+            router: this.router
         }).$mount('#app')
     }
 };

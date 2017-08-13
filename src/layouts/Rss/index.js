@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import Feeds from '../../models/Feeds'
+import Db from '../../service/PouchDbService'
 import tpl from './tpl.html'
 import './style.less'
 
@@ -9,61 +9,51 @@ export default {
     data() {
         return {
 
+            db: null,
+
             // page load or not
             loaded: false,
 
-            // current subscription id
-            curSub: '',
-
             // subscriptions list
             subscriptions: [],
-
-            // current subscription's feeds
-            curItems: [],
-
-            // Page size
-            pageSize: 10,
-
-            // Current page no
-            pageNo: 1,
-
-            // scroll height
-            scrollHeight: 0,
-        }
-    },
-
-    computed: {
-
-        // sort publish time desc
-        sortedItems() {
-            return  _.orderBy(this.curItems, ['timestampUsec'], ['desc'])
-                .filter(item => item && item.canonical && item.summary)
-        },
-
-        // pagniation items
-        displayItems() {
-            return this.sortedItems.slice(0, this.pageNo * this.pageSize)
         }
     },
 
     async mounted() {
 
         // Create feed database
-        this.feed = new Feeds('subscriptions')
+        this.db = new Db('harsreader')
 
         // Fetch subscriptions list
-        const subscriptions = await this.feed.fetchSubscriptions()
+        try {
+            await this.db.fetchSetSubscriptions()
+            this.subscriptions = await this.db.subscriptions()
+            console.log(this.subscriptions);
+        }
+        catch (e) {
+            console.log('fetchSetSubscriptions Error in `Rss`', e)
+        }
+
         this.loaded = true
-        this.subscriptions = subscriptions
+
+        // Fetch feeds
+        try {
+            this.subscriptions.forEach(s => {
+                this.db.fetchSetFeeds(s.id)
+            })
+        }
+        catch (e) {
+            console.log('fetchSetFeeds Error in `Rss`', e)
+        }
 
         // Observe pagination
-        setTimeout(() => {
-            this.io = new IntersectionObserver(this.nextPage);
-            this.io.observe(this.$refs.footer)
-        }, 0)
+        // setTimeout(() => {
+        //     this.io = new IntersectionObserver(this.nextPage);
+        //     this.io.observe(this.$refs.footer)
+        // }, 0)
 
         // Auto sync feeds
-        this.intervalSync()
+        // this.intervalSync()
     },
 
     methods: {

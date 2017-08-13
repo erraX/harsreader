@@ -1,19 +1,5 @@
 import Vue from 'vue'
-
-function objToQueryStr(obj) {
-    if (!obj) {
-        return ''
-    }
-
-    let queryArray = []
-    for (let key in obj) {
-        if (obj[key]) {
-            queryArray.push(key + '=' + encodeURIComponent(obj[key]))
-        }
-    }
-
-    return queryArray.join('&')
-}
+import objToQueryStr from './utils/objToQueryStr'
 
 function request(method, url) {
     return async (data, options) => {
@@ -26,17 +12,20 @@ function request(method, url) {
                 location.href = '/#/login'
             }
 
-            // throw new Error(JSON.stringify(err))
             throw new Error(err.body)
         }
     }
 }
 
-export const getUserInfo = request(`get`, `/rss/reader/api/0/user-info`)
-export const getSbList = request(`get`, `rss/reader/api/0/subscription/list`)
-export const getContent = (data, options) => {
+const PREFIX = `rss/reader/api/0`
+
+export const getUserInfo = request(`get`, `${PREFIX}/user-info`)
+export const getSbList = request(`get`, `${PREFIX}/subscription/list`)
+export const getFeeds = (data, options) => {
     const streamId = data.streamId
     delete data.streamId
 
-    return request(`get`, `rss/reader/api/0/stream/contents/${streamId}?${objToQueryStr(data)}`)()
+    return request(`get`, `${PREFIX}/stream/contents/${streamId}?${objToQueryStr(data)}`)()
 }
+
+export const getUnreadCounts = request(`get`, `${PREFIX}/unread-count`)

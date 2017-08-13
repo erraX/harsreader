@@ -5,7 +5,7 @@ import { getSbList, getContent } from '../api'
 
 PouchDB.plugin(PouchDBFind)
 
-export default class Feeds {
+export default class Db {
     constructor(name) {
         this.sDb = new PouchDB('subscriptions')
         this.fDb = new PouchDB('feeds')
@@ -24,7 +24,7 @@ export default class Feeds {
             console.log(e);
         }
 
-        return res.subscriptions
+        return res && res.subscriptions
     }
 
     async allFeeds() {

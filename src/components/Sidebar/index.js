@@ -5,15 +5,15 @@ import './style.less'
 export default {
     template: tpl,
 
-    data() {
-        return {
-            subscriptions: []
-        }
-    },
+    props: ['db', 'subscriptions'],
 
     methods: {
+        showAll() {
+            this.$router.push({path: 'all'})
+        },
+
         checkSub({ id }) {
-            this.$route.router.go({path: '/feed/' + id})
+            this.$router.push({path: encodeURIComponent(id)})
         },
     }
 }

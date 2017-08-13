@@ -16,13 +16,11 @@ export default {
 
     computed: {
         oauthLink() {
-            return `
-                https://www.inoreader.com/oauth2/auth?
-                    client_id=${this.clientId}
-                    &redirect_uri=${encodeURIComponent(this.redirectURI)}
-                    &response_type=code
-                    &state=${this.state}
-            `
+            return `https://www.inoreader.com/oauth2/auth?`
+                    + `client_id=${this.clientId}`
+                    + `&redirect_uri=${encodeURIComponent(this.redirectURI)}`
+                    + `&response_type=code`
+                    + `&state=${this.state}`
         }
     },
 
